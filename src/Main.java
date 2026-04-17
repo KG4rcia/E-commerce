@@ -6,8 +6,9 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10);
-        Produto produtoTeste2 = new Produto("GARRAFA", "GARRAFA TERMICA AZUL", 90, 0);
+        Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10, false);
+        Produto produtoTeste2 = new Produto("GARRAFA", "GARRAFA TERMICA AZUL", 90, 0, false);
+        Produto produtoTeste3 = new Produto("GELADEIRA", "GELADEIRA DUAS PORTAS", 2500, 4, true);
         gerenciador.adicionarProduto(produtoTeste);
         gerenciador.adicionarProduto(produtoTeste2);
 
@@ -71,6 +72,7 @@ public class Main {
                 cadastrarCliente();
                 break;
             case 6:
+                gerenciarCliente();
                 break;
             case 7:
                 System.out.println(" - ENCERRANDO - ");
@@ -94,6 +96,7 @@ public class Main {
         System.out.println("-".repeat(20));
         String nomeProdutoValida;
         String descricaoProdutoValido;
+        boolean verificarGrandePorte = false;
         double precoUnitario;
         int quantidadeEstoque;
 
@@ -169,7 +172,31 @@ public class Main {
 
         }
 
-        Produto produto = new Produto(nomeProdutoValida, descricaoProdutoValido, precoUnitario, quantidadeEstoque);
+        while (true) {
+            System.out.print("É UM PRODUTO DE GRANDE PORTE? [SIM/NÃO]: ");
+            String grandePorte = scanner.nextLine().trim().toUpperCase();
+
+            try {
+                if (grandePorte.isEmpty()) {
+                    throw new IllegalArgumentException();
+                } else if (!grandePorte.equals("SIM") || !grandePorte.equals("NÃO")) {
+                    throw new IllegalArgumentException();
+                }
+
+                if (grandePorte.equals("SIM")) {
+                    verificarGrandePorte = true;
+                } else if (grandePorte.equals("NÃO")) {
+                    verificarGrandePorte = false;
+                }
+
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: Preencha o campo corretamente, é somente \"SIM\" ou \"NÃO\". Números e outras palavras não são válidos.");
+            }
+
+        }
+
+        Produto produto = new Produto(nomeProdutoValida, descricaoProdutoValido, precoUnitario, quantidadeEstoque, verificarGrandePorte);
         gerenciador.adicionarProduto(produto);
         System.out.println(" - PRODUTO CRIADO - ");
     }
@@ -279,10 +306,18 @@ public class Main {
     }
 
     public static void gerenciarCliente() {
+
         // 1. Listar Clientes
         // 2. Procurar Cliente
         // 3. Editar Cliente
-        // 4. Apagar Cliente
+
+        // 4. Encerrar Pedido
+        //    1. Criar Objeto endereço que vai calcular taxa pelo estado.
+        //    2. Verificar se pedido possui flag de grande porte.
+        //    3. Atualizar o preço com as duas taxas.
+        //    4. Mudar para finalizado.
+
+        // 5. Apagar Cliente
     }
 
 

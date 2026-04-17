@@ -20,7 +20,7 @@ public class Gerenciador {
 
     public boolean verificarCPF(String cpf) {
         for (Cliente cliente : clientes) {
-            if (cliente.getCep().equals(cpf)) {
+            if (cliente.getCpf().equals(cpf)) {
                 return true;
             }
         }
@@ -102,8 +102,9 @@ public class Gerenciador {
                             Cliente clienteComprador = procurarCliente(comprador);
 
                             produto.setQuantidade(produto.getQuantidade() - quantidadeProduto);
-                            Pedido pedido = new Pedido(clienteComprador.getNome(), produto.getNome(), produto.getDescricao(), produto.getQuantidade(), produto.getPrecoUnitario());
+                            Pedido pedido = new Pedido(clienteComprador, produto.getNome(), produto.getDescricao(), produto.getQuantidade(), produto.getPrecoUnitario(), produto.isGrandePorte());
                             pedidos.add(pedido);
+                            clienteComprador.fazerPedido(pedido);
                             System.out.println(" - VENDA REALIZADA COM SUCESSO - ");
 
                             break;
@@ -146,7 +147,8 @@ public class Gerenciador {
         for (int i = 0; i < produtos.size(); i++) {
             System.out.println((i+1) + " | NOME: " + produtos.get(i).getNome() +
                     " | QUANTIDADE: " + produtos.get(i).getQuantidade() +
-                    " | PREÇO UNITÁRIO: R$ " + produtos.get(i).getPrecoUnitario() + "0");
+                    " | PREÇO UNITÁRIO: R$ " + produtos.get(i).getPrecoUnitario() + "0" +
+                    " | GRANDE PORTE: " + (produtos.get(i).isGrandePorte() ? "SIM" : "NÃO"));
         }
 
     }

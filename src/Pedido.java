@@ -1,17 +1,19 @@
 public class Pedido {
-    private String nomeCliente;
+    private Cliente cliente;
     private String nomeProduto;
     private String descricaoProduto;
     private int quantidadeProduto;
     private double valorProduto;
+    private boolean porteGrande;
     private String status;
 
-    public Pedido(String nomeCliente, String nomeProduto, String descricaoProduto, int quantidadeProduto, double valorProduto) {
-        this.nomeCliente = nomeCliente;
+    public Pedido(Cliente cliente, String nomeProduto, String descricaoProduto, int quantidadeProduto, double valorProduto, boolean porteGrande) {
+        this.cliente = cliente;
         this.nomeProduto = nomeProduto;
         this.descricaoProduto = descricaoProduto;
         this.quantidadeProduto = quantidadeProduto;
         this.valorProduto = valorProduto;
+        this.porteGrande = porteGrande;
         this.status = "PENDENTE";
     }
 
@@ -23,12 +25,29 @@ public class Pedido {
         this.status = statusAtual;
     }
 
-    public String getStatus() {
-        return status;
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "nomeCliente='" + cliente.getNome() + '\'' +
+                ", nomeProduto='" + nomeProduto + '\'' +
+                ", descricaoProduto='" + descricaoProduto + '\'' +
+                ", quantidadeProduto=" + quantidadeProduto +
+                ", valorProduto=" + valorProduto +
+                ", porteGrande=" + porteGrande +
+                ", status='" + status + '\'' +
+                '}';
     }
 
-    public String getNomeCliente() {
-        return nomeCliente;
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public boolean isPorteGrande() {
+        return porteGrande;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public String getNomeProduto() {
@@ -47,13 +66,6 @@ public class Pedido {
         return valorProduto;
     }
 
-
-    public void setNomeCliente(String nomeCliente) {
-        if (nomeCliente.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        this.nomeCliente = nomeCliente;
-    }
 
     public void setNomeProduto(String nomeProduto) {
         if (nomeProduto.isEmpty()) {

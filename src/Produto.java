@@ -3,12 +3,25 @@ public class Produto {
     private String descricao;
     private int quantidade;
     private double precoUnitario;
+    private boolean grandePorte;
 
-    public Produto(String nome, String descricao, double precoUnitario, int quantidade) {
+    public Produto(String nome, String descricao, double precoUnitario, int quantidade, boolean grandePorte) {
         this.nome = nome;
         this.descricao = descricao;
         this.precoUnitario = precoUnitario;
         this.quantidade = quantidade;
+        this.grandePorte = grandePorte;
+    }
+
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", quantidade=" + quantidade +
+                ", precoUnitario=" + precoUnitario +
+                ", grandePorte=" + grandePorte +
+                '}';
     }
 
     public double calcularTotal() {
@@ -54,6 +67,14 @@ public class Produto {
         }
 
         this.precoUnitario = precoUnitario;
+    }
+
+    public void setGrandePorte(boolean grandePorte) {
+        this.grandePorte = grandePorte;
+    }
+
+    public boolean isGrandePorte() {
+        return grandePorte;
     }
 
     public String getDescricao() {

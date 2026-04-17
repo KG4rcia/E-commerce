@@ -7,7 +7,7 @@ public class Cliente {
     private String cpf;
     private String endereco;
     private String cep;
-    private List<Pedido> pedidos = new ArrayList<>();
+    private List<Pedido> pedidosCliente = new ArrayList<>();
 
     public Cliente(String nome, int idade, String cpf, String endereco, String cep) {
         this.nome = nome;
@@ -18,7 +18,7 @@ public class Cliente {
     }
 
     public void fazerPedido(Pedido pedido) {
-        pedidos.add(pedido);
+        pedidosCliente.add(pedido);
     }
 
 
