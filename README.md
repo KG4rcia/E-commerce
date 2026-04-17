@@ -5,6 +5,7 @@
 - Murilo da Silva Cardoso - RA 42699517
 - Lucas Eduardo Malachias Bagatela - RA 44213948
 - Yago Gabriel leal Firmino - RA 42143276
+- Ricardo Aguilar Arapa - RA 42618156
  
 ## 📋 Tema Escolhido
 E-commerce
