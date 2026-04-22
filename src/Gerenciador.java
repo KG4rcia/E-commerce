@@ -5,10 +5,10 @@ import java.util.Scanner;
 
 public class Gerenciador {
     private String nomeLoja;
-    private List<Cliente> clientes = new ArrayList<>();
+
+    private List<Usuario> usuarios = new ArrayList<>();
     private List<Produto> produtos = new ArrayList<>();
     private List<Pedido> pedidos = new ArrayList<>();
-
 
     public Gerenciador(String nomeLoja) {
         this.nomeLoja = nomeLoja;
@@ -19,7 +19,7 @@ public class Gerenciador {
     }
 
     public boolean verificarCPF(String cpf) {
-        for (Cliente cliente : clientes) {
+        for (Usuario cliente : usuarios) {
             if (cliente.getCpf().equals(cpf)) {
                 return true;
             }
@@ -29,7 +29,7 @@ public class Gerenciador {
     }
 
     public void fazerPedido(Scanner scanner) {
-        if (clientes.isEmpty()) {
+        if (usuarios.isEmpty()) {
             System.out.println("- ERRO: Não é possível realizar uma venda se não há clientes cadastrados.");
             return;
         }
@@ -103,6 +103,7 @@ public class Gerenciador {
 
                             produto.setQuantidade(produto.getQuantidade() - quantidadeProduto);
                             Pedido pedido = new Pedido(clienteComprador, produto.getNome(), produto.getDescricao(), produto.getQuantidade(), produto.getPrecoUnitario(), produto.isGrandePorte());
+
                             pedidos.add(pedido);
                             clienteComprador.fazerPedido(pedido);
                             System.out.println(" - VENDA REALIZADA COM SUCESSO - ");
@@ -128,9 +129,9 @@ public class Gerenciador {
     }
 
     public Cliente procurarCliente(String cpf) {
-        for (int i = 0; i < clientes.size(); i++) {
-            if (clientes.get(i).getCpf().equals(cpf)) {
-                return clientes.get(i);
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (usuarios.get(i).getCpf().equals(cpf) && usuarios.get(i) instanceof Cliente) {
+                return ((Cliente) usuarios.get(i));
             }
         }
 
@@ -148,7 +149,9 @@ public class Gerenciador {
             System.out.println((i+1) + " | NOME: " + produtos.get(i).getNome() +
                     " | QUANTIDADE: " + produtos.get(i).getQuantidade() +
                     " | PREÇO UNITÁRIO: R$ " + produtos.get(i).getPrecoUnitario() + "0" +
-                    " | GRANDE PORTE: " + (produtos.get(i).isGrandePorte() ? "SIM" : "NÃO"));
+                    " | GRANDE PORTE: " + (produtos.get(i).isGrandePorte() ? "SIM" : "NÃO") +
+                    " | NOME VENDEDOR: " + produtos.get(i).getVendedor().getNome().toUpperCase() +
+                    " | CPF VENDEDOR: " + produtos.get(i).getVendedor().getCep());
         }
 
     }
@@ -197,29 +200,114 @@ public class Gerenciador {
 
     }
 
-    public void adicionarCliente(Cliente cliente) {
-        clientes.add(cliente);
+    public void adicionarUsuario(Usuario usuario) {
+        usuarios.add(usuario);
     }
 
-    public void removerCliente(Cliente cliente) {
-        clientes.remove(cliente);
+    public void removerUsuario(Usuario usuario) {
+        usuarios.remove(usuario);
+    }
+
+    public void listarUsuarios() {
+        System.out.println("-".repeat(20));
+        if (usuarios.isEmpty()) {
+            throw new IllegalStateException("- ERRO: A Lista de usuários está vazia.");
+        }
+
+        System.out.println("- USUÁRIOS CADASTRADOS: ");
+
+        for (Usuario usuario : usuarios) {
+            System.out.println("NOME: " + usuario.getNome().toUpperCase());
+            System.out.println("IDADE: " + usuario.getIdade());
+            System.out.println("CPF: " + usuario.getCpf());
+            System.out.println("TIPO: " + usuario.getClass());
+            System.out.println();
+        }
+        System.out.println("-".repeat(20));
     }
 
     public void listarClientes() {
-        System.out.println("-".repeat(20));
-        if (clientes.isEmpty()) {
-            throw new IllegalStateException("- ERRO: A Lista de Clientes está vazia.");
+        if (usuarios.isEmpty()) {
+            throw new IllegalStateException();
         }
 
-        System.out.println("- CLIENTES CADASTRADOS: ");
+        boolean temClienteCadastrado = false;
 
-        for (Cliente cliente : clientes) {
-            System.out.println("NOME: " + cliente.getNome().toUpperCase());
-            System.out.println("IDADE: " + cliente.getIdade());
-            System.out.println("CPF: " + cliente.getCpf());
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (usuarios.get(i) instanceof Cliente) {
+
+                if (!temClienteCadastrado) {
+                    System.out.println(" - CLIENTES: ");
+                    temClienteCadastrado = true;
+                }
+
+                System.out.println("NOME: " + usuarios.get(i).getNome().toUpperCase());
+                System.out.println("IDADE: " + usuarios.get(i).getIdade());
+                System.out.println("CPF: " + usuarios.get(i).getCpf().toUpperCase());
+            }
+
         }
-        System.out.println("-".repeat(20));
+
+
+        if (!temClienteCadastrado) {
+            System.out.println(" - NÃO HÁ CLIENTES CADASTRADOS.");
+        }
 
     }
 
+    public Administrador procurarAdministradorPorCPF(String cpf) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getCpf().equals(cpf) && usuario instanceof Administrador) {
+                return ((Administrador) usuario);
+            }
+        }
+
+        throw new IllegalArgumentException("Não existe um Administrador com esse CPF.");
+    }
+
+    public Vendedor procurarVendedorPorCPDF(String cpf) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getCpf().equals(cpf) && usuario instanceof Vendedor) {
+                return ((Vendedor) usuario);
+            }
+        }
+
+        throw new IllegalArgumentException("Não existe um Vendedor com esse CPF.");
+    }
+
+    public void setNomeLoja(String nomeLoja) {
+        if (nomeLoja.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.nomeLoja = nomeLoja;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    public String getNomeLoja() {
+        return nomeLoja;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
 }

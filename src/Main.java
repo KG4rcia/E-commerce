@@ -6,14 +6,23 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10, false);
-        Produto produtoTeste2 = new Produto("GARRAFA", "GARRAFA TERMICA AZUL", 90, 0, false);
-        Produto produtoTeste3 = new Produto("GELADEIRA", "GELADEIRA DUAS PORTAS", 2500, 4, true);
+        Vendedor vendedor1 = new Vendedor("Rogerio", 30, "98765421", "Rua dos Vendedores", "12345");
+        Vendedor vendedor2 = new Vendedor("Marcos", 46, "3336", "Rua dos Vendedores", "1214");
+        Cliente cliente1 = new Cliente("Rodrigo", 19, "12345", "Rua das Flores", "0987");
+        Administrador administrador1 = new Administrador("Kauan", 20, "530", "Rua das Casas", "12345");
+
+        gerenciador.adicionarUsuario(vendedor1);
+        gerenciador.adicionarUsuario(vendedor2);
+        gerenciador.adicionarUsuario(cliente1);
+        gerenciador.adicionarUsuario(administrador1);
+
+        Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10, false, vendedor1);
+        Produto produtoTeste2 = new Produto("GARRAFA", "GARRAFA TERMICA AZUL", 90, 0, false, vendedor1);
+        Produto produtoTeste3 = new Produto("GELADEIRA", "GELADEIRA DUAS PORTAS", 2500, 4, true, vendedor2);
+
         gerenciador.adicionarProduto(produtoTeste);
         gerenciador.adicionarProduto(produtoTeste2);
-
-        Cliente cliente1 = new Cliente("Rodrigo", 19, "12345", "Rua das Flores", "0987");
-        gerenciador.adicionarCliente(cliente1);
+        gerenciador.adicionarProduto(produtoTeste3);
 
         System.out.println(" - BEM VINDO(A) AO SISTEMA DA PONTAVENDA - ");
         int escolhaUsuario;
@@ -33,8 +42,8 @@ public class Main {
         System.out.println("| 2. LISTAR PRODUTOS");
         System.out.println("| 3. VENDER PRODUTO");
         System.out.println("| 4. PROCURAR PRODUTO");
-        System.out.println("| 5. CADASTRAR CLIENTE");
-        System.out.println("| 6. GERENCIAR CLIENTE");
+        System.out.println("| 5. CADASTRAR USUÁRIO");
+        System.out.println("| 6. GERENCIAR USUÁRIOS");
         System.out.println("| 7. ENCERRAR");
         System.out.println("-".repeat(20));
 
@@ -69,7 +78,7 @@ public class Main {
                 gerenciador.procurarProduto(scanner);
                 break;
             case 5:
-                cadastrarCliente();
+                cadastrarUsuario();
                 break;
             case 6:
                 gerenciarCliente();
@@ -93,7 +102,38 @@ public class Main {
     }
 
     public static void cadastrarProduto() {
-        System.out.println("-".repeat(20));
+        String usuarioAcessando;
+        boolean acesso = false;
+        Vendedor vendedor;
+        String cpfVendedor = "";
+
+        while (true) {
+            try {
+                gerenciador.listarUsuarios();
+                System.out.print(" - QUEM ESTÁ ACESSANDO? (DIGITE O CPF DO USUÁRIO / DIGITE \"000\" PARA SAIR): ");
+                usuarioAcessando = scanner.nextLine();
+
+                if (usuarioAcessando.equals("000")) {
+                    break;
+                } else if (usuarioAcessando.isEmpty()) {
+                    throw new IllegalArgumentException("Preencha o campo corretamente.");
+                }
+
+                vendedor = gerenciador.procurarVendedorPorCPDF(usuarioAcessando);
+                cpfVendedor = vendedor.getCpf();
+                acesso = true;
+
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: " + e.getMessage());
+            }
+        }
+
+        if (!acesso) {
+            System.out.println(" - RETORNANDO - ");
+            return;
+        }
+
         String nomeProdutoValida;
         String descricaoProdutoValido;
         boolean verificarGrandePorte = false;
@@ -135,11 +175,11 @@ public class Main {
         }
 
         while (true) {
-            System.out.print("INFORME O PREÇO UNITÁRIO DO PRODUTO: ");
-            precoUnitario = scanner.nextDouble();
-            scanner.nextLine();
-
             try {
+                System.out.print("INFORME O PREÇO UNITÁRIO DO PRODUTO: ");
+                precoUnitario = scanner.nextDouble();
+                scanner.nextLine();
+
                 if (precoUnitario <= 0) {
                     throw new IllegalArgumentException();
                 }
@@ -147,18 +187,20 @@ public class Main {
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("- ERRO: O valor do produto não pode ser menor ou igual a zero.");
+                scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("- ERRO: Somente números, nada de texto.");
+                scanner.nextLine();
             }
 
         }
 
         while (true) {
-            System.out.print("INFORME A QUANTIDADE EM ESTOQUE: ");
-            quantidadeEstoque = scanner.nextInt();
-            scanner.nextLine();
-
             try {
+                System.out.print("INFORME A QUANTIDADE EM ESTOQUE: ");
+                quantidadeEstoque = scanner.nextInt();
+                scanner.nextLine();
+
                 if (quantidadeEstoque <= 0) {
                     throw new IllegalArgumentException();
                 }
@@ -166,42 +208,53 @@ public class Main {
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("- ERRO: A quantidade do produto não pode ser menor ou igual a zero.");
+                scanner.nextLine();
+
             } catch (InputMismatchException e) {
                 System.out.println("- ERRO: Somente números, nada de texto.");
+                scanner.nextLine();
             }
 
         }
 
         while (true) {
-            System.out.print("É UM PRODUTO DE GRANDE PORTE? [SIM/NÃO]: ");
-            String grandePorte = scanner.nextLine().trim().toUpperCase();
-
             try {
+                System.out.print("É UM PRODUTO DE GRANDE PORTE? [SIM/NÃO]: ");
+                String grandePorte = scanner.nextLine().trim().toUpperCase();
+
                 if (grandePorte.isEmpty()) {
                     throw new IllegalArgumentException();
-                } else if (!grandePorte.equals("SIM") || !grandePorte.equals("NÃO")) {
+                } else if (!grandePorte.equals("SIM") && !grandePorte.equals("NÃO")) {
                     throw new IllegalArgumentException();
                 }
 
                 if (grandePorte.equals("SIM")) {
                     verificarGrandePorte = true;
+                    break;
                 } else if (grandePorte.equals("NÃO")) {
                     verificarGrandePorte = false;
+                    break;
                 }
 
-                break;
             } catch (IllegalArgumentException e) {
                 System.out.println("- ERRO: Preencha o campo corretamente, é somente \"SIM\" ou \"NÃO\". Números e outras palavras não são válidos.");
             }
 
         }
 
-        Produto produto = new Produto(nomeProdutoValida, descricaoProdutoValido, precoUnitario, quantidadeEstoque, verificarGrandePorte);
-        gerenciador.adicionarProduto(produto);
-        System.out.println(" - PRODUTO CRIADO - ");
+        try {
+
+            vendedor = gerenciador.procurarVendedorPorCPDF(usuarioAcessando);
+
+            Produto produto = new Produto(nomeProdutoValida, descricaoProdutoValido, precoUnitario, quantidadeEstoque, verificarGrandePorte, vendedor);
+            gerenciador.adicionarProduto(produto);
+            System.out.println(" - PRODUTO CRIADO - ");
+        } catch (IllegalArgumentException e) {
+            return;
+        }
     }
 
-    public static void cadastrarCliente() {
+    public static void cadastrarUsuario() {
         System.out.println("-".repeat(20));
         String clienteNome;
         int clienteIdade;
@@ -300,12 +353,78 @@ public class Main {
 
         }
 
-        Cliente cliente = new Cliente(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
+        while (true) {
+            try {
+                System.out.println("\n- SELECIONE UMA DAS OPÇÕES: ");
+                System.out.println("1. CLIENTE: Como \"CLIENTE\", é possivel ver a lista de produtos e realizar compras.");
+                System.out.println("2. VENDEDOR: Como \"VENDEDOR\", é possivel ver a lista de produtos e cadastrar novos produtos.");
+                System.out.println("3. ADMINISTRADOR: Como \"ADMINISTRADOR\", é possivel ver a lista de produtos e gerenciar os usuários.");
+                System.out.print("SUA ESCOLHA: ");
+                int opcaoUsuario = scanner.nextInt();
+
+                switch (opcaoUsuario) {
+                    case 1:
+                        Cliente cliente = new Cliente(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
+                        gerenciador.adicionarUsuario(cliente);
+                        break;
+                    case 2:
+                        Administrador administrador = new Administrador(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
+                        gerenciador.adicionarUsuario(administrador);
+                        break;
+                    case 3:
+                        Vendedor vendedor = new Vendedor(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
+                        gerenciador.adicionarUsuario(vendedor);
+                        break;
+                    default:
+                        throw new IllegalArgumentException();
+                }
+
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("- ERRO: Somente números, nada de letras.");
+                scanner.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: Escolha uma opção válida (1-3).");
+            }
+
+        }
+
         System.out.println("\n - CADASTRO REALIZADO COM SUCESSO - ");
-        gerenciador.adicionarCliente(cliente);
     }
 
     public static void gerenciarCliente() {
+        // 0. Permitir somente que ADMINISTRADORES acessem essa parte.
+        String usuarioAcessando;
+        gerenciador.listarUsuarios();
+        Administrador administrador;
+        boolean acesso = false;
+
+        while (true) {
+            try {
+                System.out.print(" - QUEM ESTÁ ACESSANDO? (DIGITE O CPF DO USUÁRIO / DIGITE \"000\" PARA SAIR): ");
+                usuarioAcessando = scanner.nextLine();
+
+                if (usuarioAcessando.equals("000")) {
+                    break;
+                } else if (usuarioAcessando.isEmpty()) {
+                    throw new IllegalArgumentException("Preencha o campo corretamente.");
+                }
+
+                administrador = gerenciador.procurarAdministradorPorCPF(usuarioAcessando);
+                acesso = true;
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: " + e.getMessage());
+            }
+        }
+
+        if (!acesso) {
+            System.out.println(" - RETORNANDO - ");
+            return;
+        }
+
+        System.out.println(" - ACESSO LIBERADO ");
+        menuAdministrador();
 
         // 1. Listar Clientes
         // 2. Procurar Cliente
@@ -318,6 +437,53 @@ public class Main {
         //    4. Mudar para finalizado.
 
         // 5. Apagar Cliente
+    }
+
+    public static void menuAdministrador() {
+        System.out.println(" - MENU DE ADMINISTRADOR: ");
+
+        System.out.println("1. LISTAR TODOS OS USUÁRIOS");
+        System.out.println("2. LISTAR TODOS OS PEDIDOS");
+        System.out.println("3. PROCURAR USUÁRIO POR CPF");
+        System.out.println("4. EDITAR USUÁRIO");
+        System.out.println("5. EDITAR PRODUTO");
+        System.out.println("6. REMOVER USUÁRIO");
+        System.out.println("7. REMOVER PRODUTO");
+        System.out.println("8. MUDAR NOME DA LOJA");
+        System.out.println("9. RETORNAR AO MENU PADRÃO");
+    }
+
+    public static void processarDadosAdministrador(int escolhaAdministrador) {
+        switch (escolhaAdministrador) {
+            case 1:
+                gerenciador.listarUsuarios();
+                break;
+            case 2:
+                gerenciador.listarProdutos();
+                break;
+            case 3:
+
+                break;
+            case 4:
+
+                break;
+            case 5:
+
+                break;
+            case 6:
+
+                break;
+            case 7:
+
+                break;
+            case 8:
+
+                break;
+            case 9:
+
+                break;
+        }
+
     }
 
 

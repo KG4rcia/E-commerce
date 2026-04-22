@@ -4,13 +4,15 @@ public class Produto {
     private int quantidade;
     private double precoUnitario;
     private boolean grandePorte;
+    private Vendedor vendedor;
 
-    public Produto(String nome, String descricao, double precoUnitario, int quantidade, boolean grandePorte) {
+    public Produto(String nome, String descricao, double precoUnitario, int quantidade, boolean grandePorte, Vendedor vendedor) {
         this.nome = nome;
         this.descricao = descricao;
         this.precoUnitario = precoUnitario;
         this.quantidade = quantidade;
         this.grandePorte = grandePorte;
+        this.vendedor = vendedor;
     }
 
     @Override
@@ -21,6 +23,7 @@ public class Produto {
                 ", quantidade=" + quantidade +
                 ", precoUnitario=" + precoUnitario +
                 ", grandePorte=" + grandePorte +
+                ", vendedor=" + vendedor +
                 '}';
     }
 
@@ -35,6 +38,10 @@ public class Produto {
             return false;
         }
 
+    }
+
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
     }
 
     public void setNome(String nome) {
@@ -93,4 +100,7 @@ public class Produto {
         return precoUnitario;
     }
 
+    public Vendedor getVendedor() {
+        return vendedor;
+    }
 }

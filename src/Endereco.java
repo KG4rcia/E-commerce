@@ -25,7 +25,6 @@ public class Endereco {
     }
 
     public void calcularTaxa(Pedido pedido) {
-
         if (pedido.isPorteGrande()) {
 
         } else {

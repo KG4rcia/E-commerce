@@ -14,7 +14,6 @@ public class Pedido {
         this.quantidadeProduto = quantidadeProduto;
         this.valorProduto = valorProduto;
         this.porteGrande = porteGrande;
-        this.status = "PENDENTE";
     }
 
     public void setStatus(String statusAtual) {
