@@ -17,18 +17,18 @@ O objetivo central deste projeto é desenvolver um sistema de e-commerce eficien
 A estrutura busca garantir a segurança e a clareza das informações em cada etapa da compra. 
 
 ## 📦 Funcionalidades Principais
-1. Cadastrar Produto
+1. Cadastrar model.Produto
 2. Listar Produtos
-3. Vender Produto
-4. Cadastrar Cliente
-5. Gerenciar Cliente
+3. Vender model.Produto
+4. Cadastrar model.Cliente
+5. Gerenciar model.Cliente
  
 ## 🏗️ Estrutura de Classes (Planejada)
-- **Classe 1:** Cliente - Responsável por todas as informações e métodos do cliente
-- **Classe 2:** Gerenciador - Responsável por fazer o gerenciamento de todas os clientes e produtos
-- **Classe 3:** Pedido - Responsável por representar o pedido, ele determina se foi realizado ou não
-- **Classe 4:** Produto - Responsável por representar o produto dentro do sistema, controla quantidade, preço, descrição e etc
-- **Classe 5:** Endereço - Representa o endereço, guarda bairro, rua e CEP para que Pedido para possa ser entregue.
+- **Classe 1:** model.Cliente - Responsável por todas as informações e métodos do cliente
+- **Classe 2:** util.Gerenciador - Responsável por fazer o gerenciamento de todas os clientes e produtos
+- **Classe 3:** model.Pedido - Responsável por representar o pedido, ele determina se foi realizado ou não
+- **Classe 4:** model.Produto - Responsável por representar o produto dentro do sistema, controla quantidade, preço, descrição e etc
+- **Classe 5:** Endereço - Representa o endereço, guarda bairro, rua e CEP para que model.Pedido para possa ser entregue.
  
 ## 🔄 Regra de Negócio Complexa
 A rerga de negócio implementada é a taxa de entrega se o produto for ou não de grande porte. A taxa é feita sobre o valor total do pedido, ela equivale 

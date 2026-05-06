@@ -1,19 +1,34 @@
+import model.*;
+import util.Gerenciador;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    static Gerenciador gerenciador = new Gerenciador("PontaVenda");
+    static Gerenciador gerenciador = new Gerenciador("PONTAVENDA");
     static Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        Vendedor vendedor1 = new Vendedor("Rogerio", 30, "98765421", "Rua dos Vendedores", "12345");
-        Vendedor vendedor2 = new Vendedor("Marcos", 46, "3336", "Rua dos Vendedores", "1214");
-        Cliente cliente1 = new Cliente("Rodrigo", 19, "12345", "Rua das Flores", "0987");
-        Administrador administrador1 = new Administrador("Kauan", 20, "530", "Rua das Casas", "12345");
+    public static void teste() {
+
+        System.out.println("\n === RODANDO COM TESTE === \n");
+
+        Endereco e1 = new Endereco("São Paulo", "Mogi das Cruzes", "Vila Mogilar", "12345", 123);
+        Endereco e2 = new Endereco("Minas Gerais", "Belo Horizonte", "", "1441", 234);
+        Endereco e3 = new Endereco("Rio de Janeiro", "São Gonçalo", "", "8416", 120);
+        Endereco e4 = new Endereco("Bahia", "Salvador", "", "7311", 44);
+
+        Vendedor vendedor1 = new Vendedor("Rogerio", 30, "98765421", e1);
+        Vendedor vendedor2 = new Vendedor("Marcos", 46, "3336", e2);
+        Cliente cliente1 = new Cliente("Rodrigo", 19, "12345", e3);
+        Cliente cliente2 = new Cliente("Murilo", 19, "2468", e1);
+        Cliente cliente3 = new Cliente("Jorge", 19, "36912", e4);
+
+        Administrador administrador1 = new Administrador("Kauan", 20, "530", e4);
 
         gerenciador.adicionarUsuario(vendedor1);
         gerenciador.adicionarUsuario(vendedor2);
         gerenciador.adicionarUsuario(cliente1);
+        gerenciador.adicionarUsuario(cliente2);
+        gerenciador.adicionarUsuario(cliente3);
         gerenciador.adicionarUsuario(administrador1);
 
         Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10, false, vendedor1);
@@ -23,8 +38,11 @@ public class Main {
         gerenciador.adicionarProduto(produtoTeste);
         gerenciador.adicionarProduto(produtoTeste2);
         gerenciador.adicionarProduto(produtoTeste3);
+    }
 
-        System.out.println(" - BEM VINDO(A) AO SISTEMA DA PONTAVENDA - ");
+    public static void main(String[] args) {
+//        teste();
+
         int escolhaUsuario;
 
         do {
@@ -36,15 +54,15 @@ public class Main {
 
     public static int exibirMenu() {
         int escolha;
-
-        System.out.println("-".repeat(20));
+        System.out.println("- BEM VINDO(A) AO SISTEMA DA " + gerenciador.getNomeLoja() + " - ");
         System.out.println("| 1. CADASTRAR PRODUTO");
         System.out.println("| 2. LISTAR PRODUTOS");
-        System.out.println("| 3. VENDER PRODUTO");
+        System.out.println("| 3. FAZER PEDIDO");
         System.out.println("| 4. PROCURAR PRODUTO");
         System.out.println("| 5. CADASTRAR USUÁRIO");
         System.out.println("| 6. GERENCIAR USUÁRIOS");
-        System.out.println("| 7. ENCERRAR");
+        System.out.println("| 7. GERENCIAR SEU PEDIDO");
+        System.out.println("| 8. ENCERRAR");
         System.out.println("-".repeat(20));
 
         while (true) {
@@ -66,13 +84,44 @@ public class Main {
     public static void processarDado(int escolhaUsuario) {
         switch (escolhaUsuario) {
             case 1:
-                cadastrarProduto();
+                while (true) {
+                    try {
+                        gerenciador.listarVendedores();
+
+                        System.out.print("- INFORME O CPF DO VENDEDOR: ");
+                        String vendedorCPF = scanner.nextLine();
+
+                        Vendedor vendedor = gerenciador.procurarVendedorPorCPF(vendedorCPF);
+
+                        vendedor.cadastrarProduto(scanner, gerenciador);
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("- ERRO: " + e.getMessage());
+                    }
+                }
                 break;
             case 2:
                 gerenciador.listarProdutos();
                 break;
             case 3:
-                gerenciador.fazerPedido(scanner);
+                while (true) {
+                    try {
+                        gerenciador.listarClientes();
+
+                        System.out.print("- INFORME O CPF DO CLIENTE: ");
+                        String clienteCPF = scanner.nextLine();
+
+                        Cliente cliente = gerenciador.procurarCliente(clienteCPF);
+
+                        cliente.fazerPedido(scanner, gerenciador);
+                        break;
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("- ERRO: " + e.getMessage());
+                    } catch (IllegalStateException e) {
+                        System.out.println("- ERRO: " + e.getMessage());
+                        return;
+                    }
+                }
                 break;
             case 4:
                 gerenciador.procurarProduto(scanner);
@@ -81,9 +130,12 @@ public class Main {
                 cadastrarUsuario();
                 break;
             case 6:
-                gerenciarCliente();
+                gerenciadorAdministrador();
                 break;
             case 7:
+                gerenciador.gerenciandoStatusPedido(scanner);
+                break;
+            case 8:
                 System.out.println(" - ENCERRANDO - ");
                 System.out.println("-".repeat(20));
                 return;
@@ -93,175 +145,19 @@ public class Main {
         }
     }
 
-    public static String validarTexto(String texto) {
-        if (texto.isEmpty()) {
-            return null;
-        }
-
-        return texto.toUpperCase().trim();
-    }
-
-    public static void cadastrarProduto() {
-        String usuarioAcessando;
-        boolean acesso = false;
-        Vendedor vendedor;
-        String cpfVendedor = "";
-
-        while (true) {
-            try {
-                gerenciador.listarUsuarios();
-                System.out.print(" - QUEM ESTÁ ACESSANDO? (DIGITE O CPF DO USUÁRIO / DIGITE \"000\" PARA SAIR): ");
-                usuarioAcessando = scanner.nextLine();
-
-                if (usuarioAcessando.equals("000")) {
-                    break;
-                } else if (usuarioAcessando.isEmpty()) {
-                    throw new IllegalArgumentException("Preencha o campo corretamente.");
-                }
-
-                vendedor = gerenciador.procurarVendedorPorCPDF(usuarioAcessando);
-                cpfVendedor = vendedor.getCpf();
-                acesso = true;
-
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: " + e.getMessage());
-            }
-        }
-
-        if (!acesso) {
-            System.out.println(" - RETORNANDO - ");
-            return;
-        }
-
-        String nomeProdutoValida;
-        String descricaoProdutoValido;
-        boolean verificarGrandePorte = false;
-        double precoUnitario;
-        int quantidadeEstoque;
-
-        while (true) {
-            System.out.print("INFORME O NOME DO PRODUTO: ");
-            String nomeProduto = scanner.nextLine();
-
-            try {
-                nomeProdutoValida = validarTexto(nomeProduto);
-                if (nomeProdutoValida == null) {
-                    throw new InputMismatchException();
-                }
-
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("- ERRO: O nome do produto não pode estar vazio.");
-            }
-
-        }
-
-        while (true) {
-            System.out.print("INFORME A DESCRIÇÃO DO PRODUTO: ");
-            String descricaoProduto = scanner.nextLine();
-
-            try {
-                descricaoProdutoValido = validarTexto(descricaoProduto);
-                if (descricaoProdutoValido == null) {
-                    throw new InputMismatchException();
-                }
-
-                break;
-            } catch (InputMismatchException e) {
-                System.out.println("- ERRO: A descrição do produto não pode estar vazio.");
-            }
-
-        }
-
-        while (true) {
-            try {
-                System.out.print("INFORME O PREÇO UNITÁRIO DO PRODUTO: ");
-                precoUnitario = scanner.nextDouble();
-                scanner.nextLine();
-
-                if (precoUnitario <= 0) {
-                    throw new IllegalArgumentException();
-                }
-
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O valor do produto não pode ser menor ou igual a zero.");
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("- ERRO: Somente números, nada de texto.");
-                scanner.nextLine();
-            }
-
-        }
-
-        while (true) {
-            try {
-                System.out.print("INFORME A QUANTIDADE EM ESTOQUE: ");
-                quantidadeEstoque = scanner.nextInt();
-                scanner.nextLine();
-
-                if (quantidadeEstoque <= 0) {
-                    throw new IllegalArgumentException();
-                }
-
-                break;
-            } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: A quantidade do produto não pode ser menor ou igual a zero.");
-                scanner.nextLine();
-
-            } catch (InputMismatchException e) {
-                System.out.println("- ERRO: Somente números, nada de texto.");
-                scanner.nextLine();
-            }
-
-        }
-
-        while (true) {
-            try {
-                System.out.print("É UM PRODUTO DE GRANDE PORTE? [SIM/NÃO]: ");
-                String grandePorte = scanner.nextLine().trim().toUpperCase();
-
-                if (grandePorte.isEmpty()) {
-                    throw new IllegalArgumentException();
-                } else if (!grandePorte.equals("SIM") && !grandePorte.equals("NÃO")) {
-                    throw new IllegalArgumentException();
-                }
-
-                if (grandePorte.equals("SIM")) {
-                    verificarGrandePorte = true;
-                    break;
-                } else if (grandePorte.equals("NÃO")) {
-                    verificarGrandePorte = false;
-                    break;
-                }
-
-            } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: Preencha o campo corretamente, é somente \"SIM\" ou \"NÃO\". Números e outras palavras não são válidos.");
-            }
-
-        }
-
-        try {
-
-            vendedor = gerenciador.procurarVendedorPorCPDF(usuarioAcessando);
-
-            Produto produto = new Produto(nomeProdutoValida, descricaoProdutoValido, precoUnitario, quantidadeEstoque, verificarGrandePorte, vendedor);
-            gerenciador.adicionarProduto(produto);
-            System.out.println(" - PRODUTO CRIADO - ");
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-    }
-
     public static void cadastrarUsuario() {
         System.out.println("-".repeat(20));
         String clienteNome;
         int clienteIdade;
         String clienteCPF;
-        String clienteCEP;
-        String clienteEndereco;
 
+        String clienteCEP =  "";
+        String clienteEstado = "";
+        String clienteCidade = "";
+        String clienteBairro = "";
+        int clienteNumCasa = 0;
+
+        // Nome Cliente
         while (true) {
             try {
                 System.out.print("INFORME O NOME DO CLIENTE: ");
@@ -277,6 +173,7 @@ public class Main {
             }
         }
 
+        // Idade do Cliente
         while (true) {
             try {
                 System.out.print("INFORME A IDADE DO CLIENTE: ");
@@ -297,14 +194,13 @@ public class Main {
             }
         }
 
+        // CPF Cliente
         while (true) {
             try {
                 System.out.print("INFORME O CPF: ");
                 clienteCPF = scanner.nextLine();
 
                 if (clienteCPF.isEmpty()) {
-                    throw new IllegalArgumentException();
-                } else if (!clienteCPF.matches("\\d+")) {
                     throw new IllegalArgumentException();
                 }
 
@@ -315,6 +211,7 @@ public class Main {
 
         }
 
+        // Cep Cliente
         while (true) {
             try {
                 System.out.print("INFORME O CEP DO CLIENTE: ");
@@ -333,22 +230,70 @@ public class Main {
 
         }
 
+        // Estado Cliente
         while (true) {
             try {
-                System.out.print("INFORME O ENDEREÇO DO CLIENTE: ");
-                clienteEndereco = scanner.nextLine();
+                System.out.print("INFORME O ESTADO DO CLIENTE: ");
+                clienteEstado = scanner.nextLine();
 
-                if (clienteEndereco.isEmpty()) {
+                if (clienteEstado.isEmpty()) {
                     throw new InputMismatchException();
-                } else if (clienteEndereco.matches("\\d+")) {
-                    throw new IllegalArgumentException();
                 }
 
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("- ERRO: O endereço do cliente não deve estar vazio.");
-            } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O endereço do cliente não deve conter somente números.");
+                System.out.println("- ERRO: Preencha o campo corretamente. Ele não deve estar vazio.");
+            }
+
+        }
+
+        // Cidade Cliente
+        while (true) {
+            try {
+                System.out.print("INFORME A CIDADE DO CLIENTE: ");
+                clienteEstado = scanner.nextLine();
+
+                if (clienteEstado.isEmpty()) {
+                    throw new InputMismatchException();
+                }
+
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("- ERRO: Preencha o campo corretamente. Ele não deve estar vazio.");
+            }
+
+        }
+
+        // Bairro Cliente
+        while (true) {
+            try {
+                System.out.print("INFORME O BAIRRO DO CLIENTE: ");
+                clienteEstado = scanner.nextLine();
+
+                if (clienteEstado.isEmpty()) {
+                    throw new InputMismatchException();
+                }
+
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("- ERRO: Preencha o campo corretamente. Ele não deve estar vazio.");
+            }
+
+        }
+
+        // Número da casa Cliente
+        while (true) {
+            try {
+                System.out.print("INFORME O NÚMERO DA CASA DO CLIENTE: ");
+                clienteNumCasa = scanner.nextInt();
+
+                if (clienteNumCasa < 0) {
+                    throw new InputMismatchException();
+                }
+
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("- ERRO: Preencha o campo corretamente. O número não deve ser menor ou igual a zero.");
             }
 
         }
@@ -364,16 +309,22 @@ public class Main {
 
                 switch (opcaoUsuario) {
                     case 1:
-                        Cliente cliente = new Cliente(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
+                        Endereco enderecoCliente = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
+                        Cliente cliente = new Cliente(clienteNome, clienteIdade, clienteCPF, enderecoCliente);
                         gerenciador.adicionarUsuario(cliente);
+
                         break;
                     case 2:
-                        Administrador administrador = new Administrador(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
-                        gerenciador.adicionarUsuario(administrador);
+                        Endereco enderecoVendedor = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
+                        Vendedor vendedor = new Vendedor(clienteNome, clienteIdade, clienteCPF, enderecoVendedor);
+                        gerenciador.adicionarUsuario(vendedor);
+
                         break;
                     case 3:
-                        Vendedor vendedor = new Vendedor(clienteNome, clienteIdade, clienteCPF, clienteEndereco, clienteCEP);
-                        gerenciador.adicionarUsuario(vendedor);
+                        Endereco enderecoAdministrador = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
+                        Administrador administrador = new Administrador(clienteNome, clienteIdade, clienteCPF, enderecoAdministrador);
+                        gerenciador.adicionarUsuario(administrador);
+
                         break;
                     default:
                         throw new IllegalArgumentException();
@@ -392,99 +343,99 @@ public class Main {
         System.out.println("\n - CADASTRO REALIZADO COM SUCESSO - ");
     }
 
-    public static void gerenciarCliente() {
-        // 0. Permitir somente que ADMINISTRADORES acessem essa parte.
+    // Administrador
+    public static void menuAdministrador() {
+        System.out.println("=".repeat(10));
+        System.out.println("\n - MENU DE ADMINISTRADOR: ");
+
+        System.out.println("1. LISTAR TODOS OS USUÁRIOS");
+        System.out.println("2. LISTAR TODOS OS PEDIDOS");
+        System.out.println("3. EDITAR USUÁRIO"); // Testar
+        System.out.println("4. EDITAR PRODUTO"); // Começar
+        System.out.println("5. REMOVER USUÁRIO");
+        System.out.println("6. REMOVER PRODUTO");
+        System.out.println("7. RETORNAR AO MENU PADRÃO");
+    }
+
+    public static void gerenciadorAdministrador() {
         String usuarioAcessando;
-        gerenciador.listarUsuarios();
         Administrador administrador;
-        boolean acesso = false;
 
         while (true) {
             try {
-                System.out.print(" - QUEM ESTÁ ACESSANDO? (DIGITE O CPF DO USUÁRIO / DIGITE \"000\" PARA SAIR): ");
+                gerenciador.listarUsuarios();
+                System.out.print(" - QUEM ESTÁ ACESSANDO? (DIGITE O CPF DO USUÁRIO OU DIGITE \"000\" PARA SAIR): ");
                 usuarioAcessando = scanner.nextLine();
 
                 if (usuarioAcessando.equals("000")) {
+                    System.out.println(" - RETORNANDO AO MENU PADRÃO -");
                     break;
+
                 } else if (usuarioAcessando.isEmpty()) {
                     throw new IllegalArgumentException("Preencha o campo corretamente.");
                 }
 
                 administrador = gerenciador.procurarAdministradorPorCPF(usuarioAcessando);
-                acesso = true;
+                System.out.println(" - ACESSO LIBERADO -\n");
+
+                do {
+                    menuAdministrador();
+                    System.out.print("-> SUA ESCOLHA: ");
+                    int opcaoAdministrador = scanner.nextInt();
+
+                    if (opcaoAdministrador == 7) {
+                        System.out.println(" - RETORNANDO AO MENU PADRÃO -");
+                        break;
+                    }
+
+                    scanner.nextLine();
+                    processarDadosAdministrador(administrador, opcaoAdministrador);
+
+                } while (true);
+
                 break;
             } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: " + e.getMessage());
+            } catch (IllegalStateException e) {
                 System.out.println("- ERRO: " + e.getMessage());
             }
         }
 
-        if (!acesso) {
-            System.out.println(" - RETORNANDO - ");
-            return;
-        }
-
-        System.out.println(" - ACESSO LIBERADO ");
-        menuAdministrador();
-
-        // 1. Listar Clientes
-        // 2. Procurar Cliente
-        // 3. Editar Cliente
-
-        // 4. Encerrar Pedido
-        //    1. Criar Objeto endereço que vai calcular taxa pelo estado.
-        //    2. Verificar se pedido possui flag de grande porte.
-        //    3. Atualizar o preço com as duas taxas.
-        //    4. Mudar para finalizado.
-
-        // 5. Apagar Cliente
     }
 
-    public static void menuAdministrador() {
-        System.out.println(" - MENU DE ADMINISTRADOR: ");
+    public static void processarDadosAdministrador(Administrador administrador, int escolhaAdministrador) {
+        try {
+            switch (escolhaAdministrador) {
+                case 1:
+                    gerenciador.listarUsuarios();
+                    break;
+                case 2:
+                    gerenciador.listarPedidos();
+                    break;
+                case 3:
+                    administrador.editarUsuario(scanner, gerenciador);
+                    break;
+                case 4:
+                    administrador.editarProduto(scanner, gerenciador);
+                    break;
+                case 5:
+                    administrador.removerUsuario(scanner, gerenciador);
+                    break;
+                case 6:
+                    administrador.removerProduto(scanner, gerenciador);
+                    break;
+                case 7:
+                    System.out.println(" - RETORNANDO AO MENU PADRÃO - ");
+                    return;
+                default:
+                    System.out.println(" - POR FAVOR, INSERIR OPÇÃO VÁLIDA - ");
+                    break;
+            }
 
-        System.out.println("1. LISTAR TODOS OS USUÁRIOS");
-        System.out.println("2. LISTAR TODOS OS PEDIDOS");
-        System.out.println("3. PROCURAR USUÁRIO POR CPF");
-        System.out.println("4. EDITAR USUÁRIO");
-        System.out.println("5. EDITAR PRODUTO");
-        System.out.println("6. REMOVER USUÁRIO");
-        System.out.println("7. REMOVER PRODUTO");
-        System.out.println("8. MUDAR NOME DA LOJA");
-        System.out.println("9. RETORNAR AO MENU PADRÃO");
-    }
-
-    public static void processarDadosAdministrador(int escolhaAdministrador) {
-        switch (escolhaAdministrador) {
-            case 1:
-                gerenciador.listarUsuarios();
-                break;
-            case 2:
-                gerenciador.listarProdutos();
-                break;
-            case 3:
-
-                break;
-            case 4:
-
-                break;
-            case 5:
-
-                break;
-            case 6:
-
-                break;
-            case 7:
-
-                break;
-            case 8:
-
-                break;
-            case 9:
-
-                break;
+        } catch (IllegalStateException e) {
+            System.out.println("\n- ERRO: " + e.getMessage());
         }
 
     }
-
 
 }

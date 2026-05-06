@@ -1,34 +1,27 @@
+package model;
+
 public class Endereco {
     private String uf;
-    private String rua;
+    private String cidade;
     private String bairro;
     private String cep;
     private int num;
-    private String complemento;
     private double taxaEntrega;
 
-    public Endereco(String estado, String rua, String bairro, String cep, int num) {
+    public Endereco(String estado, String cidade, String bairro, String cep, int num) {
         this.uf = estado;
-        this.rua = rua;
+        this.cidade = cidade;
         this.bairro = bairro;
         this.cep = cep;
         this.num = num;
     }
 
-    public Endereco(String estado, String rua, String bairro, String cep, int num, String complemento) {
-        this.uf = estado;
-        this.rua = rua;
-        this.bairro = bairro;
-        this.cep = cep;
-        this.num = num;
-        this.complemento = complemento;
-    }
-
-    public void calcularTaxa(Pedido pedido) {
+    public double calcularTaxa(Pedido pedido) {
         if (pedido.isPorteGrande()) {
-
+            taxaEntrega = 0.10 * pedido.getValorProduto();
+            return taxaEntrega;
         } else {
-
+            return 0;
         }
 
     }
@@ -41,12 +34,12 @@ public class Endereco {
         this.uf = uf;
     }
 
-    public void setRua(String rua) {
-        if (rua.isEmpty()) {
+    public void setRua(String cidade) {
+        if (cidade.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        this.rua = rua;
+        this.cidade = cidade;
     }
 
     public void setBairro(String bairro) {
@@ -69,14 +62,6 @@ public class Endereco {
         this.num = num;
     }
 
-    public void setComplemento(String complemento) {
-        if (complemento.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        this.complemento = complemento;
-    }
-
     public void setTaxaEntrega(double taxaEntrega) {
         if (taxaEntrega < 0) {
             throw new IllegalArgumentException();
@@ -89,8 +74,8 @@ public class Endereco {
         return uf;
     }
 
-    public String getRua() {
-        return rua;
+    public String getCidade() {
+        return cidade;
     }
 
     public String getBairro() {
@@ -103,10 +88,6 @@ public class Endereco {
 
     public int getNum() {
         return num;
-    }
-
-    public String getComplemento() {
-        return complemento;
     }
 
     public double getTaxaEntrega() {

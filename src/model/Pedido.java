@@ -1,32 +1,31 @@
+package model;
+
 public class Pedido {
     private Cliente cliente;
+    private int idProduto;
     private String nomeProduto;
     private String descricaoProduto;
     private int quantidadeProduto;
     private double valorProduto;
     private boolean porteGrande;
-    private String status;
+    private String status = "PENDENTE";
+    private Vendedor vendedor;
+    private double taxaEntrega;
 
-    public Pedido(Cliente cliente, String nomeProduto, String descricaoProduto, int quantidadeProduto, double valorProduto, boolean porteGrande) {
+    public Pedido(Cliente cliente, int idProduto, String nomeProduto, String descricaoProduto, int quantidadeProduto, double valorProduto, boolean porteGrande, Vendedor vendedor) {
         this.cliente = cliente;
+        this.idProduto = idProduto;
         this.nomeProduto = nomeProduto;
         this.descricaoProduto = descricaoProduto;
         this.quantidadeProduto = quantidadeProduto;
         this.valorProduto = valorProduto;
         this.porteGrande = porteGrande;
-    }
-
-    public void setStatus(String statusAtual) {
-        if (statusAtual.toUpperCase().equals("PENDENTE") || statusAtual.toUpperCase().equals("FINALIZADA") || statusAtual.toUpperCase().equals("CANCELADA")) {
-            throw new IllegalArgumentException();
-        }
-
-        this.status = statusAtual;
+        this.vendedor = vendedor;
     }
 
     @Override
     public String toString() {
-        return "Pedido{" +
+        return "model.Pedido{" +
                 "nomeCliente='" + cliente.getNome() + '\'' +
                 ", nomeProduto='" + nomeProduto + '\'' +
                 ", descricaoProduto='" + descricaoProduto + '\'' +
@@ -37,12 +36,25 @@ public class Pedido {
                 '}';
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public void infoPedido() {
+        System.out.println("- NOME DO CLIENTE: " + this.cliente.getNome());
+        System.out.println("- CPF DO CLUENTE: " + this.cliente.getCpf());
+        System.out.println("- PRODUTO: " + this.nomeProduto);
+        System.out.println("- ID PRODUTO: " + this.idProduto);
+        System.out.println("- GRANDE PORTE: " + (this.porteGrande ? "SIM" : "NÃO"));
+        System.out.println();
+        System.out.println("- QUANTIDADE | VALOR UNITÁRIO | TAXA DE ENTREGA");
+        System.out.println(this.quantidadeProduto + " | " + this.valorProduto + " | " + this.taxaEntrega);
+        System.out.println("- VALOR TOTAL: R$ " + (this.quantidadeProduto*this.valorProduto) + this.taxaEntrega + "0");
     }
 
     public boolean isPorteGrande() {
         return porteGrande;
+    }
+
+    // Getters
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public String getStatus() {
@@ -65,7 +77,19 @@ public class Pedido {
         return valorProduto;
     }
 
+    public int getIdProduto() {
+        return idProduto;
+    }
 
+    public Vendedor getVendedor() {
+        return vendedor;
+    }
+
+    public double getTaxaEntrega() {
+        return taxaEntrega;
+    }
+
+    // Setters
     public void setNomeProduto(String nomeProduto) {
         if (nomeProduto.isEmpty()) {
             throw new IllegalArgumentException();
@@ -97,4 +121,33 @@ public class Pedido {
 
         this.valorProduto = valorProduto;
     }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void setIdProduto(int idProduto) {
+        this.idProduto = idProduto;
+    }
+
+    public void setPorteGrande(boolean porteGrande) {
+        this.porteGrande = porteGrande;
+    }
+
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
+    }
+
+    public void setTaxaEntrega(double taxaEntrega) {
+        this.taxaEntrega = taxaEntrega;
+    }
+
+    public void setStatus(String statusAtual) {
+        if (!statusAtual.toUpperCase().equals("PENDENTE") || !statusAtual.toUpperCase().equals("FINALIZADA") || !statusAtual.toUpperCase().equals("CANCELADA")) {
+            throw new IllegalArgumentException();
+        }
+
+        this.status = statusAtual;
+    }
+
 }
