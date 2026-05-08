@@ -1,16 +1,25 @@
 package model;
 
 public abstract class Usuario {
+    protected int id;
     protected String nome;
     protected int idade;
+    protected String email;
+    protected String telefone;
     protected String cpf;
     protected Endereco endereco;
 
-    public Usuario(String nome, int idade, String cpf, Endereco endereco) {
+    public Usuario(String nome, String cpf, int idade, String email, String telefone, Endereco endereco) {
         this.nome = nome;
-        this.idade = idade;
         this.cpf = cpf;
+        this.idade = idade;
+        this.email = email;
+        this.telefone = telefone;
         this.endereco = endereco;
+    }
+
+    public Usuario() {
+
     }
 
     public abstract void info();
@@ -41,6 +50,18 @@ public abstract class Usuario {
         this.endereco = endereco;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
     // Getters
     public String getNome() {
         return nome;
@@ -58,4 +79,15 @@ public abstract class Usuario {
         return endereco;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
 }

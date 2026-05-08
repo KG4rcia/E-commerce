@@ -8,8 +8,8 @@ import java.util.Scanner;
 public class Vendedor extends Usuario {
     private int vendas;
 
-    public Vendedor(String nome, int idade, String cpf, Endereco endereco) {
-        super(nome, idade, cpf, endereco);
+    public Vendedor(String nome, String cpf, int idade, String email, String telefone, Endereco endereco) {
+        super(nome, cpf, idade, email, telefone, endereco);
     }
 
 
@@ -149,4 +149,13 @@ public class Vendedor extends Usuario {
         }
     }
 
+    // Getters
+    public int getVendas() {
+        return vendas;
+    }
+
+    // Setters
+    public void setVendas(int vendas) {
+        this.vendas = vendas;
+    }
 }

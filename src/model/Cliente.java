@@ -1,5 +1,6 @@
 package model;
 
+import dao.PedidoDAO;
 import util.Gerenciador;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ import java.util.Scanner;
 public class Cliente extends Usuario {
     private List<Pedido> pedidosCliente = new ArrayList<>();
 
-    public Cliente(String nome, int idade, String cpf, Endereco endereco) {
-        super(nome, idade, cpf, endereco);
+    public Cliente(String nome, String cpf, int idade, String email, String telefone, Endereco endereco) {
+        super(nome, cpf, idade, email, telefone, endereco);
     }
 
     @Override
@@ -31,9 +32,13 @@ public class Cliente extends Usuario {
             return;
         }
 
+        if (gerenciador.getProdutos().isEmpty()) {
+            System.out.println("- ERRO: Não é possível realizar uma venda se não há produtos cadastrados.\n");
+            return;
+        }
+
         int numProdutoVendido = 0;
         String clienteCPF = "";
-        String vendedor = "";
         int quantidadeProduto;
         boolean encontrado = false;
 
@@ -41,7 +46,7 @@ public class Cliente extends Usuario {
             try {
                 gerenciador.listarProdutos();
 
-                System.out.print("\nINFORME O PRODUTO A SER VENDIDO: ");
+                System.out.print("\nINFORME O PRODUTO: ");
                 numProdutoVendido = scanner.nextInt();
 
                 if ((numProdutoVendido-1) > gerenciador.getProdutos().size()) {
@@ -92,7 +97,6 @@ public class Cliente extends Usuario {
 
                     while (true) {
                         try {
-                            gerenciador.listarClientes();
 
                             Pedido pedido = new Pedido(
                                     this,
@@ -109,10 +113,14 @@ public class Cliente extends Usuario {
 
                             produto.getVendedor().vendeu();
                             produto.setQuantidade(produto.getQuantidade() - quantidadeProduto);
+
                             pedidosCliente.add(pedido);
                             gerenciador.adicionarPedido(pedido);
+                            new PedidoDAO().salvar(pedido);
 
                             System.out.println(" - VENDA REALIZADA COM SUCESSO - ");
+                            System.out.println("=".repeat(20));
+                            System.out.println();
 
                             break;
                         } catch (IllegalArgumentException e) {
@@ -133,6 +141,5 @@ public class Cliente extends Usuario {
         }
 
     }
-
 
 }

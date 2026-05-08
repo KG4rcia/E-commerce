@@ -4,51 +4,17 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    static Gerenciador gerenciador = new Gerenciador("PONTAVENDA");
+    static Gerenciador gerenciador = new Gerenciador("PontaVenda");
     static Scanner scanner = new Scanner(System.in);
 
-    public static void teste() {
-
-        System.out.println("\n === RODANDO COM TESTE === \n");
-
-        Endereco e1 = new Endereco("São Paulo", "Mogi das Cruzes", "Vila Mogilar", "12345", 123);
-        Endereco e2 = new Endereco("Minas Gerais", "Belo Horizonte", "", "1441", 234);
-        Endereco e3 = new Endereco("Rio de Janeiro", "São Gonçalo", "", "8416", 120);
-        Endereco e4 = new Endereco("Bahia", "Salvador", "", "7311", 44);
-
-        Vendedor vendedor1 = new Vendedor("Rogerio", 30, "98765421", e1);
-        Vendedor vendedor2 = new Vendedor("Marcos", 46, "3336", e2);
-        Cliente cliente1 = new Cliente("Rodrigo", 19, "12345", e3);
-        Cliente cliente2 = new Cliente("Murilo", 19, "2468", e1);
-        Cliente cliente3 = new Cliente("Jorge", 19, "36912", e4);
-
-        Administrador administrador1 = new Administrador("Kauan", 20, "530", e4);
-
-        gerenciador.adicionarUsuario(vendedor1);
-        gerenciador.adicionarUsuario(vendedor2);
-        gerenciador.adicionarUsuario(cliente1);
-        gerenciador.adicionarUsuario(cliente2);
-        gerenciador.adicionarUsuario(cliente3);
-        gerenciador.adicionarUsuario(administrador1);
-
-        Produto produtoTeste = new Produto("CELULAR", "APARELHO DA MARCA IPHONE", 3500, 10, false, vendedor1);
-        Produto produtoTeste2 = new Produto("GARRAFA", "GARRAFA TERMICA AZUL", 90, 0, false, vendedor1);
-        Produto produtoTeste3 = new Produto("GELADEIRA", "GELADEIRA DUAS PORTAS", 2500, 4, true, vendedor2);
-
-        gerenciador.adicionarProduto(produtoTeste);
-        gerenciador.adicionarProduto(produtoTeste2);
-        gerenciador.adicionarProduto(produtoTeste3);
-    }
-
     public static void main(String[] args) {
-//        teste();
-
+        gerenciador.carregarDadosDoBanco();
         int escolhaUsuario;
 
         do {
             escolhaUsuario = exibirMenu();
             processarDado(escolhaUsuario);
-        } while (escolhaUsuario != 7);
+        } while (escolhaUsuario != 8);
 
     }
 
@@ -97,6 +63,9 @@ public class Main {
                         break;
                     } catch (IllegalArgumentException e) {
                         System.out.println("- ERRO: " + e.getMessage());
+                    } catch (IllegalStateException e) {
+                        System.out.println("- ERRO: " + e.getMessage());
+                        break;
                     }
                 }
                 break;
@@ -147,12 +116,14 @@ public class Main {
 
     public static void cadastrarUsuario() {
         System.out.println("-".repeat(20));
+
         String clienteNome;
         int clienteIdade;
+        String clienteEmail;
+        String clienteTelefone;
         String clienteCPF;
-
-        String clienteCEP =  "";
-        String clienteEstado = "";
+        String clienteCEP;
+        String clienteEstado;
         String clienteCidade = "";
         String clienteBairro = "";
         int clienteNumCasa = 0;
@@ -194,6 +165,38 @@ public class Main {
             }
         }
 
+        // Email do Cliente
+        while (true) {
+            try {
+                System.out.print("INFORME O EMAIL DO CLIENTE: ");
+                clienteEmail = scanner.nextLine();
+
+                if (clienteEmail.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: O Email do cliente não pode estar vazio.");
+            }
+        }
+
+        // Telefone do Cliente
+        while (true) {
+            try {
+                System.out.print("INFORME O TELEFONE DO CLIENTE: ");
+                clienteTelefone = scanner.nextLine();
+
+                if (clienteTelefone.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: O telefone do cliente não pode estar vazio.");
+            }
+        }
+
         // CPF Cliente
         while (true) {
             try {
@@ -201,12 +204,21 @@ public class Main {
                 clienteCPF = scanner.nextLine();
 
                 if (clienteCPF.isEmpty()) {
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("O CPF do cliente não pode estar vazio e não pode conter letras ou espaços.");
                 }
 
-                break;
+                if (!clienteCPF.matches("\\d+")) {
+                    throw new IllegalArgumentException("O CPF não pode conter letras ou símbolos. Digite apenas os números.");
+                }
+
+                if (!gerenciador.cpfJaExiste(clienteCPF)) {
+                    break;
+                } else {
+                    throw new IllegalArgumentException("Esse CPF já está cadastrado. Coloque um CPF válido.");
+                }
+
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O CPF do cliente não pode estar vazio e não pode conter letras ou espaços.");
+                System.out.println("- ERRO: " + e.getMessage());
             }
 
         }
@@ -251,7 +263,7 @@ public class Main {
         while (true) {
             try {
                 System.out.print("INFORME A CIDADE DO CLIENTE: ");
-                clienteEstado = scanner.nextLine();
+                clienteCidade = scanner.nextLine();
 
                 if (clienteEstado.isEmpty()) {
                     throw new InputMismatchException();
@@ -268,7 +280,7 @@ public class Main {
         while (true) {
             try {
                 System.out.print("INFORME O BAIRRO DO CLIENTE: ");
-                clienteEstado = scanner.nextLine();
+                clienteBairro = scanner.nextLine();
 
                 if (clienteEstado.isEmpty()) {
                     throw new InputMismatchException();
@@ -310,19 +322,19 @@ public class Main {
                 switch (opcaoUsuario) {
                     case 1:
                         Endereco enderecoCliente = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
-                        Cliente cliente = new Cliente(clienteNome, clienteIdade, clienteCPF, enderecoCliente);
+                        Cliente cliente = new Cliente(clienteNome, clienteCPF, clienteIdade, clienteEmail, clienteTelefone, enderecoCliente);
                         gerenciador.adicionarUsuario(cliente);
 
                         break;
                     case 2:
                         Endereco enderecoVendedor = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
-                        Vendedor vendedor = new Vendedor(clienteNome, clienteIdade, clienteCPF, enderecoVendedor);
+                        Vendedor vendedor = new Vendedor(clienteNome, clienteCPF, clienteIdade, clienteEmail, clienteTelefone, enderecoVendedor);
                         gerenciador.adicionarUsuario(vendedor);
 
                         break;
                     case 3:
                         Endereco enderecoAdministrador = new Endereco(clienteEstado, clienteCidade, clienteBairro, clienteCEP, clienteNumCasa);
-                        Administrador administrador = new Administrador(clienteNome, clienteIdade, clienteCPF, enderecoAdministrador);
+                        Administrador administrador = new Administrador(clienteNome, clienteCPF, clienteIdade, clienteEmail, clienteTelefone, enderecoAdministrador);
                         gerenciador.adicionarUsuario(administrador);
 
                         break;
@@ -345,19 +357,24 @@ public class Main {
 
     // Administrador
     public static void menuAdministrador() {
-        System.out.println("=".repeat(10));
-        System.out.println("\n - MENU DE ADMINISTRADOR: ");
+        System.out.println("=".repeat(20));
+        System.out.println(" - MENU DE ADMINISTRADOR: ");
 
         System.out.println("1. LISTAR TODOS OS USUÁRIOS");
         System.out.println("2. LISTAR TODOS OS PEDIDOS");
-        System.out.println("3. EDITAR USUÁRIO"); // Testar
-        System.out.println("4. EDITAR PRODUTO"); // Começar
+        System.out.println("3. EDITAR USUÁRIO");
+        System.out.println("4. EDITAR PRODUTO");
         System.out.println("5. REMOVER USUÁRIO");
         System.out.println("6. REMOVER PRODUTO");
         System.out.println("7. RETORNAR AO MENU PADRÃO");
     }
 
     public static void gerenciadorAdministrador() {
+        if (gerenciador.getUsuarios().isEmpty()) {
+            System.out.println("- ERRO: Não há usuários no momento.\n");
+            return;
+        }
+
         String usuarioAcessando;
         Administrador administrador;
 
@@ -376,7 +393,7 @@ public class Main {
                 }
 
                 administrador = gerenciador.procurarAdministradorPorCPF(usuarioAcessando);
-                System.out.println(" - ACESSO LIBERADO -\n");
+                System.out.println(" - ACESSO LIBERADO - ");
 
                 do {
                     menuAdministrador();
@@ -384,7 +401,7 @@ public class Main {
                     int opcaoAdministrador = scanner.nextInt();
 
                     if (opcaoAdministrador == 7) {
-                        System.out.println(" - RETORNANDO AO MENU PADRÃO -");
+                        System.out.println(" - RETORNANDO AO MENU PADRÃO -\n");
                         break;
                     }
 

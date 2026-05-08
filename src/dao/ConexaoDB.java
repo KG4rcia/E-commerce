@@ -6,11 +6,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexaoDB {
-    private static final String URL = "";
+    private static final String URL = "jdbc:postgresql://localhost:5432/pontavenda";
     private static final String USUARIO = "postgres";
     private static final String SENHA = "root";
 
-    public Connection getConnection() {
+    public static Connection getConexao() {
         try {
             return DriverManager.getConnection(URL, USUARIO, SENHA);
         } catch (SQLException e) {

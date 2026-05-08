@@ -1,6 +1,7 @@
 package model;
 
 public class Endereco {
+    private Integer id;
     private String uf;
     private String cidade;
     private String bairro;
@@ -26,6 +27,8 @@ public class Endereco {
 
     }
 
+
+    // Setters
     public void setUf(String uf) {
         if (uf.isEmpty()) {
             throw new IllegalArgumentException();
@@ -70,6 +73,15 @@ public class Endereco {
         this.taxaEntrega = taxaEntrega;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    // Getters
     public String getUf() {
         return uf;
     }
@@ -92,5 +104,9 @@ public class Endereco {
 
     public double getTaxaEntrega() {
         return taxaEntrega;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

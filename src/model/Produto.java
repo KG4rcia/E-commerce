@@ -1,6 +1,7 @@
 package model;
 
 public class Produto {
+    private int id;
     private String nome;
     private String descricao;
     private int quantidade;
@@ -42,6 +43,8 @@ public class Produto {
 
     }
 
+
+    // Setters:
     public void setVendedor(Vendedor vendedor) {
         this.vendedor = vendedor;
     }
@@ -80,6 +83,15 @@ public class Produto {
 
     public void setGrandePorte(boolean grandePorte) {
         this.grandePorte = grandePorte;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    // Getters
+    public int getId() {
+        return id;
     }
 
     public boolean isGrandePorte() {
