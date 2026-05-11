@@ -22,6 +22,7 @@ public class Pedido {
         this.valorProduto = valorProduto;
         this.porteGrande = porteGrande;
         this.vendedor = vendedor;
+        this.taxaEntrega = calcularTaxaEntrega();
     }
 
     @Override
@@ -50,6 +51,16 @@ public class Pedido {
         System.out.println(this.quantidadeProduto + " | " + this.valorProduto + " | " + this.taxaEntrega);
         System.out.println("- VALOR TOTAL: R$ " + ((this.quantidadeProduto*this.valorProduto) + this.taxaEntrega) + "0");
         System.out.println();
+    }
+
+    public double calcularTaxaEntrega() {
+        if (this.isPorteGrande()) {
+            taxaEntrega = 0.10 * this.valorProduto;
+            return taxaEntrega;
+        } else {
+            return 0;
+        }
+
     }
 
     // Getters

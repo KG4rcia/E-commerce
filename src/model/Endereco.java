@@ -17,17 +17,6 @@ public class Endereco {
         this.num = num;
     }
 
-    public double calcularTaxa(Pedido pedido) {
-        if (pedido.isPorteGrande()) {
-            taxaEntrega = 0.10 * pedido.getValorProduto();
-            return taxaEntrega;
-        } else {
-            return 0;
-        }
-
-    }
-
-
     // Setters
     public void setUf(String uf) {
         if (uf.isEmpty()) {

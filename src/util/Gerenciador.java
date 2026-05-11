@@ -1,12 +1,15 @@
 package util;
 import dao.*;
 import model.*;
+import service.PedidoService;
+import service.UsuarioService;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class Gerenciador {
+public class Gerenciador implements UsuarioService, PedidoService {
     private String nomeLoja;
     private List<Usuario> usuarios = new ArrayList<>();
     private List<Produto> produtos = new ArrayList<>();
@@ -52,6 +55,7 @@ public class Gerenciador {
 
     }
 
+    @Override
     public boolean listarPedidos(Usuario usuario) {
         if (pedidos.isEmpty()) {
             throw new IllegalStateException("Não há pedidos no momento.");
@@ -112,6 +116,7 @@ public class Gerenciador {
         System.out.println("=".repeat(20));
     }
 
+    @Override
     public void gerenciandoStatusPedido(Scanner scanner) {
         if (pedidos.isEmpty()) {
             System.out.println("- ERRO: Não há pedidos disponíveis no momento.\n");
@@ -201,6 +206,7 @@ public class Gerenciador {
         }
     }
 
+    @Override
     public void adicionarPedido(Pedido pedido) {
         pedidos.add(pedido);
     }
@@ -280,6 +286,7 @@ public class Gerenciador {
         throw new IllegalArgumentException("Não existe um Administrador com esse CPF.");
     }
 
+    @Override
     public Usuario procurarUsuario(String cpf) {
         for (Usuario usuario : usuarios) {
             if (usuario.getCpf().equals(cpf)) {
@@ -290,6 +297,7 @@ public class Gerenciador {
         throw new IllegalArgumentException("Não há nenhum usuário com esse CPF. Informe um CPF válido.");
     }
 
+    @Override
     public void listarUsuarios() {
         if (usuarios.isEmpty()) {
             throw new IllegalStateException("A Lista de usuários está vazia. É necessário ao menos 1 para essa operação.");

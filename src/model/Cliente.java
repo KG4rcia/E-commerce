@@ -109,7 +109,7 @@ public class Cliente extends Usuario {
                                     produto.getVendedor()
                             );
 
-                            pedido.setTaxaEntrega(super.endereco.calcularTaxa(pedido));
+                            pedido.setTaxaEntrega(pedido.calcularTaxaEntrega());
 
                             produto.getVendedor().vendeu();
                             produto.setQuantidade(produto.getQuantidade() - quantidadeProduto);
