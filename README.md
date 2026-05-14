@@ -1,4 +1,4 @@
-# PontoVenda - E- commerce
+# E-commerce
  
 ## 👥 Integrantes do Grupo
 - Kauan Garcia Dias de Oliveira - RA 42184932
@@ -19,9 +19,12 @@ A estrutura busca garantir a segurança e a clareza das informações em cada et
 ## 📦 Funcionalidades Principais
 1. Cadastrar Produto
 2. Listar Produtos
-3. Vender Produto
-4. Cadastrar Cliente
-5. Gerenciar Cliente
+3. Fazer Pedido
+4. Procurar Produto
+5. Cadastrar Usuário
+6. Gerenciar Usuário
+7. Gerenciar seu pedido
+8. Encerrar
  
 ## 🏗️ Estrutura de Classes (Planejada)
 - **Classe 1:** Cliente - Responsável por todas as informações e métodos do cliente
@@ -29,7 +32,9 @@ A estrutura busca garantir a segurança e a clareza das informações em cada et
 - **Classe 3:** Pedido - Responsável por representar o pedido, ele determina se foi realizado ou não
 - **Classe 4:** Produto - Responsável por representar o produto dentro do sistema, controla quantidade, preço, descrição e etc
 - **Classe 5:** Endereço - Representa o endereço, guarda bairro, rua e CEP para que model.Pedido para possa ser entregue.
+- **Classe 6:** Administrador - Representa o administrador do sistema. É responsável por gerenciar produtos e usuários.
+- **Classe 7:** Vendedor - Representa os vendedores do Sistema. É responsável por cadastrar todos os produtos que existem no sistema.
  
 ## 🔄 Regra de Negócio Complexa
-A rerga de negócio implementada é a taxa de entrega se o produto for ou não de grande porte. A taxa é feita sobre o valor total do pedido, ela equivale 
-a 10% do valor total (Unitário x Quantidade)
+A regra de negócio implementada é a taxa de entrega se o produto for ou não de grande porte. A taxa é feita sobre o valor total do pedido, ela equivale 
+a 10% do valor total (Unitário x Quantidade).
