@@ -114,8 +114,11 @@ public class Cliente extends Usuario {
                             produto.getVendedor().vendeu();
                             produto.setQuantidade(produto.getQuantidade() - quantidadeProduto);
 
+                            pedido.setCliente(this);
+
                             pedidosCliente.add(pedido);
                             gerenciador.adicionarPedido(pedido);
+
                             new PedidoDAO().salvar(pedido);
 
                             System.out.println(" - VENDA REALIZADA COM SUCESSO - ");

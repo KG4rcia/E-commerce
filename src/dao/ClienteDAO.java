@@ -3,11 +3,7 @@ import model.Administrador;
 import model.Cliente;
 import model.Endereco;
 import model.Vendedor;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +14,7 @@ public class ClienteDAO {
         String sql = "INSERT INTO cliente (nome, cpf, idade, email, telefone, endereco_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conexao = ConexaoDB.getConexao();
-             PreparedStatement entregador = conexao.prepareStatement(sql)) {
+             PreparedStatement entregador = conexao.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             entregador.setString(1, cliente.getNome());
             entregador.setString(2, cliente.getCpf());
@@ -28,6 +24,14 @@ public class ClienteDAO {
             entregador.setInt(6, cliente.getEndereco().getId());
 
             entregador.executeUpdate();
+
+            // Resgatando o ID gerado pelo banco
+            try (ResultSet rs = entregador.getGeneratedKeys()) {
+                if (rs.next()) {
+                    cliente.setId(rs.getInt(1));
+                }
+            }
+
             System.out.println(" - CLIENTE SALVO NO BANCO DE DADOS - ");
 
         } catch (SQLException e) {

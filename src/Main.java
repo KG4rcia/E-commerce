@@ -77,12 +77,16 @@ public class Main {
                     try {
                         gerenciador.listarClientes();
 
-                        System.out.print("- INFORME O CPF DO CLIENTE: ");
-                        String clienteCPF = scanner.nextLine();
+                        if (gerenciador.temCliente()) {
+                            System.out.print("- INFORME O CPF DO CLIENTE: ");
+                            String clienteCPF = scanner.nextLine();
 
-                        Cliente cliente = gerenciador.procurarCliente(clienteCPF);
+                            Cliente cliente = gerenciador.procurarCliente(clienteCPF);
 
-                        cliente.fazerPedido(scanner, gerenciador);
+                            cliente.fazerPedido(scanner, gerenciador);
+                            break;
+                        }
+
                         break;
                     } catch (IllegalArgumentException e) {
                         System.out.println("- ERRO: " + e.getMessage());
@@ -131,7 +135,7 @@ public class Main {
         // Nome Cliente
         while (true) {
             try {
-                System.out.print("INFORME O NOME DO CLIENTE: ");
+                System.out.print("INFORME O NOME DO USUÁRIO: ");
                 clienteNome = scanner.nextLine();
 
                 if (clienteNome.isEmpty()) {
@@ -140,14 +144,14 @@ public class Main {
 
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O nome do cliente não pode estar vazio.");
+                System.out.println("- ERRO: O nome do usuário não pode estar vazio.");
             }
         }
 
         // Idade do Cliente
         while (true) {
             try {
-                System.out.print("INFORME A IDADE DO CLIENTE: ");
+                System.out.print("INFORME A IDADE DO USUÁRIO: ");
                 clienteIdade = scanner.nextInt();
 
                 if (clienteIdade < 15) {
@@ -157,7 +161,7 @@ public class Main {
                 scanner.nextLine();
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: A idade do cliente deve ser no mínimo de 15.");
+                System.out.println("- ERRO: A idade do usuário deve ser no mínimo de 15.");
                 scanner.nextLine();
             } catch (InputMismatchException e) {
                 System.out.println("- ERRO: Preencha o campo IDADE corretamente. Somente números.");
@@ -168,7 +172,7 @@ public class Main {
         // Email do Cliente
         while (true) {
             try {
-                System.out.print("INFORME O EMAIL DO CLIENTE: ");
+                System.out.print("INFORME O EMAIL DO USUÁRIO: ");
                 clienteEmail = scanner.nextLine();
 
                 if (clienteEmail.isEmpty()) {
@@ -177,14 +181,14 @@ public class Main {
 
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O Email do cliente não pode estar vazio.");
+                System.out.println("- ERRO: O Email do usuário não pode estar vazio.");
             }
         }
 
         // Telefone do Cliente
         while (true) {
             try {
-                System.out.print("INFORME O TELEFONE DO CLIENTE: ");
+                System.out.print("INFORME O TELEFONE DO USUÁRIO: ");
                 clienteTelefone = scanner.nextLine();
 
                 if (clienteTelefone.isEmpty()) {
@@ -193,18 +197,18 @@ public class Main {
 
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O telefone do cliente não pode estar vazio.");
+                System.out.println("- ERRO: O telefone do usuário não pode estar vazio.");
             }
         }
 
         // CPF Cliente
         while (true) {
             try {
-                System.out.print("INFORME O CPF: ");
+                System.out.print("INFORME O CPF DO USUÁRIO: ");
                 clienteCPF = scanner.nextLine();
 
                 if (clienteCPF.isEmpty()) {
-                    throw new IllegalArgumentException("O CPF do cliente não pode estar vazio e não pode conter letras ou espaços.");
+                    throw new IllegalArgumentException("O CPF do usuário não pode estar vazio e não pode conter letras ou espaços.");
                 }
 
                 if (!clienteCPF.matches("\\d+")) {
@@ -226,7 +230,7 @@ public class Main {
         // Cep Cliente
         while (true) {
             try {
-                System.out.print("INFORME O CEP DO CLIENTE: ");
+                System.out.print("INFORME O CEP DO USUÁRIO: ");
                 clienteCEP = scanner.nextLine();
 
                 if (clienteCEP.isEmpty()) {
@@ -237,7 +241,7 @@ public class Main {
 
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("- ERRO: O CEP do cliente não pode estar vazio e não deve conter letras.");
+                System.out.println("- ERRO: O CEP do usuário não pode estar vazio e não deve conter letras.");
             }
 
         }
@@ -245,7 +249,7 @@ public class Main {
         // Estado Cliente
         while (true) {
             try {
-                System.out.print("INFORME O ESTADO DO CLIENTE: ");
+                System.out.print("INFORME O ESTADO DO USUÁRIO: ");
                 clienteEstado = scanner.nextLine();
 
                 if (clienteEstado.isEmpty()) {
@@ -262,7 +266,7 @@ public class Main {
         // Cidade Cliente
         while (true) {
             try {
-                System.out.print("INFORME A CIDADE DO CLIENTE: ");
+                System.out.print("INFORME A CIDADE DO USUÁRIO: ");
                 clienteCidade = scanner.nextLine();
 
                 if (clienteEstado.isEmpty()) {
@@ -279,7 +283,7 @@ public class Main {
         // Bairro Cliente
         while (true) {
             try {
-                System.out.print("INFORME O BAIRRO DO CLIENTE: ");
+                System.out.print("INFORME O BAIRRO DO USUÁRIO: ");
                 clienteBairro = scanner.nextLine();
 
                 if (clienteEstado.isEmpty()) {
@@ -296,16 +300,21 @@ public class Main {
         // Número da casa Cliente
         while (true) {
             try {
-                System.out.print("INFORME O NÚMERO DA CASA DO CLIENTE: ");
+                System.out.print("INFORME O NÚMERO DA CASA DO USUÁRIO: ");
                 clienteNumCasa = scanner.nextInt();
 
+                scanner.nextLine();
+
                 if (clienteNumCasa < 0) {
-                    throw new InputMismatchException();
+                    throw new InputMismatchException("Preencha o campo corretamente. O número não deve ser menor ou igual a zero.");
                 }
 
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("- ERRO: Preencha o campo corretamente. O número não deve ser menor ou igual a zero.");
+                System.out.println("- ERRO: Somente números.");
+                scanner.nextLine();
+            } catch (IllegalArgumentException e) {
+                System.out.println("- ERRO: " + e.getMessage());
             }
 
         }

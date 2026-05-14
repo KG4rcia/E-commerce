@@ -1,7 +1,7 @@
 -- 1. Criar a tabela independente primeiro
 CREATE TABLE endereco (
     id SERIAL PRIMARY KEY,
-    uf VARCHAR(2),
+    uf VARCHAR(50),
     cidade VARCHAR(100),
     bairro VARCHAR(100),
     cep VARCHAR(15),

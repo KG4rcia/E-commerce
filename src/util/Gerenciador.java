@@ -222,6 +222,16 @@ public class Gerenciador implements UsuarioService, PedidoService {
         throw new IllegalArgumentException();
     }
 
+    public boolean temCliente() {
+        for (Usuario usuario : usuarios) {
+            if (usuario instanceof Cliente) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Vendedor procurarVendedorPorCPF(String cpf) {
         for (Usuario usuario : usuarios) {
             if (usuario.getCpf().equals(cpf) && usuario instanceof Vendedor) {
@@ -309,7 +319,7 @@ public class Gerenciador implements UsuarioService, PedidoService {
             System.out.println("NOME: " + usuario.getNome().toUpperCase());
             System.out.println("IDADE: " + usuario.getIdade());
             System.out.println("CPF: " + usuario.getCpf());
-            System.out.println("TIPO: " + usuario.getClass());
+            System.out.println("TIPO: " + usuario.getClass().getSimpleName());
             System.out.println();
         }
     }
@@ -340,7 +350,7 @@ public class Gerenciador implements UsuarioService, PedidoService {
 
 
         if (!temClienteCadastrado) {
-            System.out.println("- ERRO: Não há clientes cadastrados.");
+            System.out.println("- ERRO: Não há clientes cadastrados.\n");
         }
 
     }
