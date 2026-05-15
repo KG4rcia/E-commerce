@@ -30,10 +30,6 @@ public class Produto {
                 '}';
     }
 
-    public double calcularTotal() {
-        return precoUnitario * quantidade;
-    }
-
     public boolean verificarDisponibilidade() {
         if (this.quantidade > 0) {
             return true;
@@ -42,7 +38,6 @@ public class Produto {
         }
 
     }
-
 
     // Setters:
     public void setVendedor(Vendedor vendedor) {

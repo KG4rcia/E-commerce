@@ -26,14 +26,6 @@ public class Endereco {
         this.uf = uf;
     }
 
-    public void setRua(String cidade) {
-        if (cidade.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        this.cidade = cidade;
-    }
-
     public void setBairro(String bairro) {
         if (bairro.isEmpty()) {
             throw new IllegalArgumentException();
