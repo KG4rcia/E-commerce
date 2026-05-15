@@ -38,3 +38,6 @@ A estrutura busca garantir a segurança e a clareza das informações em cada et
 ## 🔄 Regra de Negócio Complexa
 A regra de negócio implementada é a taxa de entrega se o produto for ou não de grande porte. A taxa é feita sobre o valor total do pedido, ela equivale 
 a 10% do valor total (Unitário x Quantidade).
+
+## 📹 Link
+- **https://www.youtube.com/watch?v=ZimPlHZ92Cg**
