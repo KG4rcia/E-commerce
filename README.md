@@ -5,7 +5,7 @@
 - Murilo da Silva Cardoso - RA 42699517
 - Lucas Eduardo Malachias Bagatela - RA 44213948
 - Yago Gabriel leal Firmino - RA 42143276
-- Ricardo Aguilar Arapa - RA 42618156
+- Ricardo Aguilar Arapa - RA 42628156
 - Daniel da Silva Dornelas - RA 45619018
  
 ## 📋 Tema Escolhido
